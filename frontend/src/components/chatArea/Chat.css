@@ -1,0 +1,95 @@
+.chat-container{
+    flex: 0.7;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex ;
+    align-items: center;
+    margin: 10px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+}
+.userDetails{
+    margin-left: 10px;
+}
+.userDetails .con-username{
+    font-size: 18px;
+}
+.message-box{
+    flex: 1;
+    background-color: #fff;
+    margin: 0px 11px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+
+}
+
+
+
+
+
+
+/* Send Message Container[] */
+.input-box{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px 5px;
+    font-size: 22px;
+    margin: 13px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+}
+.input-box form{
+    padding:0px 10px;
+    display: flex ;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction:row ;
+}
+.input-box input{
+    border: none;
+    outline: none;
+    font-size: 18px;
+    padding: 0px 10px;
+    flex: 1;
+}
+
+
+/* Welcome Page[] */
+
+.welcome-page{
+   width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #fff;
+    margin:10px ;
+    border-radius: 20px;
+    border-bottom: 4px solid springgreen;
+}
+
+.createGroup-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+     flex-direction: column;
+    background-color: #fff;
+    margin:10px ;
+    border-radius: 20px;
+}
+
+.createGroup-container button{
+    background-color: rgb(156, 83, 225);
+    transition: 0.5s;
+}
