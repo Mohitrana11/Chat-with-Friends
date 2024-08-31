@@ -1,9 +1,9 @@
 import React from 'react'
-import './Slidebar.css'
-
-function Conversation({ onClick }) {
+import '../slideBar/Slidebar.css'
+import { motion } from "framer-motion"
+function Conversation2() {
   return (
-    <div className='conversation-container' onClick={onClick}>
+    <motion.div whileHover={{scale:1.01}} whileTap={{scale:0.9}} className='conversation-container'>
       <p className='con-icon'>
         <img src="https://avatar.iran.liara.run/public/5" alt="" />
       </p>
@@ -12,8 +12,8 @@ function Conversation({ onClick }) {
       </p>
       <p className='con-lastMessage'>Last message</p>
       <p className='con-timeStamp'>Today</p>
-    </div>
+    </motion.div>
   )
 }
 
-export default Conversation
+export default Conversation2

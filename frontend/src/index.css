@@ -9,3 +9,8 @@
 body{
   font-family:'Roboto','Poppins',sans-serif;
 }
+
+.dark{
+  background-color:#2d3941 !important ;
+  color: white !important;
+}

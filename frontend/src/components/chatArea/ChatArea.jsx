@@ -4,10 +4,14 @@ import { IoSearchOutline } from "react-icons/io5";
 import { IoSendSharp } from "react-icons/io5";
 import MessageByMe from './MessageByMe';
 import MessageOther from './MessageOther';
+import { useSelector} from 'react-redux';
+import { toggleTheme } from '../../context/themeSlice';
+
 function ChatArea() {
+  const theme = useSelector((state) => state.themeKey.value);
   return (
-    <div className='chat-container'>
-      <div className='chat-header'>
+    <div className={`chat-container  ${theme ? '' : 'dark'}`}>
+      <div className={`chat-header ${theme ? '' : 'dark'}`}>
       <p className='con-icon'>
         <img src="https://avatar.iran.liara.run/public/5" alt="" />
       </p>
@@ -20,7 +24,7 @@ function ChatArea() {
       </div>
 
 
-      <div className='message-box'>
+      <div className={`message-box ${theme ? '' : 'dark'}`}>
         <MessageOther/>
         <MessageByMe/>
         <MessageOther/>
@@ -34,9 +38,9 @@ function ChatArea() {
         <MessageByMe/>
       </div>
 
-      <div className='input-box'>
+      <div className={`input-box ${theme ? '' : 'dark'} `}>
       <form action="">
-            <input type="text" placeholder='Search' />
+            <input type="text" placeholder='Search'  className='bg-transparent'/>
             <IoSendSharp style={{cursor:'pointer'}} />
           </form>
       </div>

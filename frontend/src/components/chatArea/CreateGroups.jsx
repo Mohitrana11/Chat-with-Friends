@@ -1,8 +1,12 @@
 import React from 'react'
 
+import { useSelector} from 'react-redux';
+import { toggleTheme } from '../../context/themeSlice';
+
 function CreateGroups() {
+  const theme = useSelector((state) => state.themeKey.value);
   return (
-    <div className='createGroup-container '>
+  <div className={` createGroup-container ${theme ? '' : 'dark'}  `}>
       <h1 className='font-bold text-xl mb-5'>Create Group</h1>
       <form action="" className='flex flex-col'>
         <input type="text" placeholder='Group Name' className='outline-none border px-4 py-2 w-[30vw] rounded-md' />
