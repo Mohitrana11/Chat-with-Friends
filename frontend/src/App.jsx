@@ -1,5 +1,10 @@
 import React from 'react'
 import './App.css'
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import MainContainer from './components/mainContainer/MainContainer'
 import Login from './components/authUser/Login'
 import Register from './components/authUser/Register'
@@ -12,7 +17,6 @@ import AvailableUsers from './components/chatArea/AvailableUsers'
 function App() {
   return (
     <div className='app'>
-     
 
       <BrowserRouter>
       <Routes>
@@ -28,6 +32,8 @@ function App() {
         {/* <Route path='*' element={<Register/>} /> */}
       </Routes>
       </BrowserRouter>
+      <ToastContainer />
+
     </div>
   )
 }
