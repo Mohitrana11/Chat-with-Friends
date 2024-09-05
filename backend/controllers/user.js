@@ -19,9 +19,10 @@ const register = catchAsyncErrors(async (req, res, next) => {
     res.cookie('token', token);
     res.status(201).json({
         success: true,
-        message: 'Sign in Successful'
+        message: 'Sign in Successful',user
     });
 });
+
 
 //User login-----------
 const login = catchAsyncErrors(async (req, res, next) => {
@@ -39,9 +40,11 @@ const login = catchAsyncErrors(async (req, res, next) => {
     }
     const token = user.getJWTToken();
     res.cookie('token', token);
+    // console.log(token)
     res.status(200).json({
         success: true,
-        message: 'Login in Successful'
+        message: 'Login in Successful',
+        // user
     });
 });
 
@@ -73,15 +76,17 @@ const getUserDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get All user Details:
 const userDetails = catchAsyncErrors(async (req, res, next) => {
-    const users = await User.find();
-    res.status(200).json({
-      success: true,
-      users,
-      message:"All user details"
+    const users = await User.find({
+        _id:{$ne:req.user._id}
     });
-  });
+    res.status(200).json({
+        success: true,
+        users,
+        message:"All user details"
+    });
+});
 
 
 module.exports = {
-    register,login,logout,userDetails,getUserDetails 
+    register,login,logout,userDetails,getUserDetails
 };

@@ -21,6 +21,7 @@ function Login() {
       const data = userLogin.data;
       toast.success(data?.message);
       navigate('/app/welcome');
+      localStorage.setItem('UserInfo',JSON.stringify(data));
       setLoading(false);
     }catch(err){
       toast.success(err.response?.data?.message);

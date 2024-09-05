@@ -1,14 +1,14 @@
 import React from 'react'
 import './Slidebar.css'
 
-function Conversation({ onClick }) {
+function Conversation({ onClick ,data}) {
   return (
     <div className='conversation-container' onClick={onClick}>
       <p className='con-icon'>
-        <img src="https://avatar.iran.liara.run/public/5" alt="" />
+        <img src={data?.avatar} alt="" />
       </p>
       <p className='con-username'>
-        Mohit SIngh Rana
+       {data?.username}
       </p>
       <p className='con-lastMessage'>Last message</p>
       <p className='con-timeStamp'>Today</p>

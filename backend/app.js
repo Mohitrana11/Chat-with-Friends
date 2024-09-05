@@ -22,6 +22,15 @@ const userRoutes  = require('./routes/userRoutes');
 app.use('/api/v1',userRoutes);
 
 
+// Message Router:
+const messageRouter  = require('./routes/message');
+app.use('/api/message',messageRouter);
+
+
+//Chat Routes:
+const chatRoutes  = require('./routes/chatRouters');
+app.use('/api/chats',chatRoutes);
+
 
 // Error handling middleware should be the last middleware
 const errorMiddleware = require('./middleware/error');

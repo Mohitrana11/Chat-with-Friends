@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Slidebar.css';
 import { CiUser } from "react-icons/ci";
 import { TiUserAdd } from "react-icons/ti";
@@ -11,10 +11,12 @@ import { useNavigate } from 'react-router-dom';
 import { IoSunnySharp } from "react-icons/io5";
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../../context/themeSlice';
+import axios from 'axios';
 
 function SlideBar() {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+  const [users, setUsers] = useState([]); // Use useState instead of useRef
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
@@ -22,6 +24,19 @@ function SlideBar() {
 
   const theme = useSelector((state) => state.themeKey.value);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/v1/details');
+        setUsers(response.data.users);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUsers();
+
+  }, []);
 
   return (
     <div className={`sidebar-container ${theme ? '' : 'dark'}`}>
@@ -33,8 +48,8 @@ function SlideBar() {
           <TiUserAdd onClick={() => { navigate('/app/available') }} style={{ cursor: 'pointer' }} />
           <AiOutlineUsergroupAdd onClick={() => { navigate('/app/usergroups') }} style={{ cursor: 'pointer' }} />
           <MdAddCircleOutline onClick={() => { navigate('/app/creategroups') }} style={{ cursor: 'pointer' }} />
-          {theme ? 
-            <IoIosMoon onClick={() => dispatch(toggleTheme())} style={{ cursor: 'pointer' }} /> : 
+          {theme ?
+            <IoIosMoon onClick={() => dispatch(toggleTheme())} style={{ cursor: 'pointer' }} /> :
             <IoSunnySharp onClick={() => dispatch(toggleTheme())} style={{ cursor: 'pointer' }} />
           }
         </div>
@@ -46,8 +61,11 @@ function SlideBar() {
         </form>
       </div>
       <div className={`users-container ${theme ? '' : 'dark'}`}>
-        <Conversation key="conversation-1" onClick={() => { navigate('/app/chat') }} />
-        <Conversation key="conversation-1" onClick={() => { navigate('/app/chat') }} />
+        {
+          users.map((item, idx) => (
+            <Conversation key={idx} data={item} onClick={() => { navigate('/app/chat') }} />
+          ))
+        }
       </div>
     </div>
   );
