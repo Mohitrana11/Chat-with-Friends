@@ -3,14 +3,12 @@ const Conversation = require('../models/chatModel');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const ErrorHandler = require('../utils/errorHandler');
 
-// Access or initiate a one-on-one chat
+
 const accessChat = catchAsyncErrors(async (req, res, next) => {
     const { userId } = req.body;
-
     if (!userId) {
         return next(new ErrorHandler('User Id not provided with request', 400));
     }
-
     let isChat = await Conversation.find({
         isGroupChat: false,
         $and: [
@@ -18,7 +16,6 @@ const accessChat = catchAsyncErrors(async (req, res, next) => {
             { users: { $elemMatch: { $eq: userId } } }
         ]
     }).populate('users', '-password').populate('latestMessage');
-
     isChat = await User.populate(isChat, {
         path: 'latestMessage.senderId',
         select: 'name email'
@@ -63,6 +60,7 @@ const fetchChats = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+
 // Fetch all group chats
 const fetchGroups = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -75,6 +73,32 @@ const fetchGroups = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+
+// rename the Group:
+const renameGroup = catchAsyncErrors(async (req,res,next)=>{
+    const { chatId, chatName } = req.body;
+
+  const updatedChat = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+        chatName: chatName,
+    },
+    {
+        new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updatedChat) {
+    return next(new Error('Chat not found',400))
+  } else {
+    res.json(updatedChat);
+  }
+
+})
+
+
 // Create a new group chat
 const createGroup = catchAsyncErrors(async (req, res, next) => {
     if (!req.body.users || !req.body.name) {
@@ -83,6 +107,9 @@ const createGroup = catchAsyncErrors(async (req, res, next) => {
 
     const users = JSON.parse(req.body.users);
     users.push(req.user._id);
+    if(users.length<2){
+        return next(new Error('More then 2 User are required to form a group chat',400));
+    }
 
     try {
         const groupChat = await Conversation.create({
@@ -123,6 +150,7 @@ const groupExit = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+
 // Add a user to a group chat
 const addSelfToGroup = catchAsyncErrors(async (req, res, next) => {
     const { chatId, userId } = req.body;
@@ -150,5 +178,6 @@ module.exports = {
     fetchGroups,
     createGroup,
     groupExit,
-    addSelfToGroup
+    addSelfToGroup,
+    renameGroup
 };

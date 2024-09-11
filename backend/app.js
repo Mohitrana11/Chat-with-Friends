@@ -32,6 +32,12 @@ const chatRoutes  = require('./routes/chatRouters');
 app.use('/api/chats',chatRoutes);
 
 
+//Search Routes
+const searchRouter  = require('./routes/searchUser');
+app.use('/api/search',searchRouter);
+
+
+
 // Error handling middleware should be the last middleware
 const errorMiddleware = require('./middleware/error');
 app.use(errorMiddleware);

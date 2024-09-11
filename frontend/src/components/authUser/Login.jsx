@@ -1,32 +1,20 @@
 // import React from 'react'
 import './Login.css'
 import logo from '../../../public/chatIcon.png'
-import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import axios from 'axios';
-import { toast } from 'react-toastify';
+// import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+// import { useState } from 'react'
+// import axios from 'axios';
+// import { toast } from 'react-toastify';
+import useLogin from '../../hooks/useLogin';
 function Login() {
-  const navigate = useNavigate();
-  const [userInput,setUserInput] = useState({});
-  const [loading,setLoading] = useState(false);
+  const {userInfo,setUserInfo,loading, userLogin} = useLogin();
   const handleInput = (e)=>{
-    setUserInput({...userInput,[e.target.id]:e.target.value})
+    setUserInfo({...userInfo,[e.target.id]:e.target.value})
   }
-  console.log(userInput)
   const handleSubmit =async (e)=>{
     e.preventDefault();
-    setLoading(true);
-    try{
-      const userLogin = await axios.post('/api/v1/login',userInput)
-      const data = userLogin.data;
-      toast.success(data?.message);
-      navigate('/app/welcome');
-      localStorage.setItem('UserInfo',JSON.stringify(data));
-      setLoading(false);
-    }catch(err){
-      toast.success(err.response?.data?.message);
-      setLoading(false);
-    }
+    userLogin();
   }
 
 

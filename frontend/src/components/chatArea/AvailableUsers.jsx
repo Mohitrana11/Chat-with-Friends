@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CiUser } from "react-icons/ci";
 import { TiUserAdd } from "react-icons/ti";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
@@ -11,16 +11,36 @@ import { toggleTheme } from '../../context/themeSlice';
 import { AnimatePresence } from 'framer-motion';
 
 import { motion } from "framer-motion"
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 function AvailableUsers() {
-  
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
   const theme = useSelector((state) => state.themeKey.value);
-  const dispatch = useDispatch();
 
 
+  const userData =JSON.parse(localStorage.getItem('chatApp'));
+  const user = userData.user;
+  console.log(user._id)
+
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/v1/details');
+        setUsers(response?.data?.users);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUsers();
+
+  }, []);
+ 
 
   return (
     <AnimatePresence>
-          <motion.div 
+        <motion.div 
           initial={{opacity:0,scale:0}}
           animate={{opacity:1,scale:1}}
           exit={{opacity:0,scale:0}}
@@ -47,16 +67,14 @@ function AvailableUsers() {
       </div>
       <div className={`users-container  ${theme ? '' : 'dark'}`}>
         <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
-        <Conversation2/>
+        {
+          users.map((item, idx) => (
+            <Conversation2 key={idx} data={item} onClick={() => {
+           
+               axios.post('/api/chats',{userId:user._id})
+              navigate('/app/chat') }} /> 
+           ))
+        } 
       </div>
     </motion.div>
     </AnimatePresence>

@@ -13,13 +13,13 @@ const register = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler('Email Already Exist',400));
     }
     const profilePicBoy = avatar|| `https://avatar.iran.liara.run/public/boy/?username${username}`;
-    const user = await User.create({ email, username, password,avatar:profilePicBoy
-    });
     const token = user.getJWTToken();
     res.cookie('token', token);
+    const user = await User.create({ email, username, password,avatar:profilePicBoy
+    });
     res.status(201).json({
         success: true,
-        message: 'Sign in Successful',user
+        message: 'Sign in Successful',user,token
     });
 });
 
@@ -40,11 +40,13 @@ const login = catchAsyncErrors(async (req, res, next) => {
     }
     const token = user.getJWTToken();
     res.cookie('token', token);
+    const users =  await User.findOne({email}).select('-email').select('-password');
     // console.log(token)
     res.status(200).json({
         success: true,
         message: 'Login in Successful',
-        // user
+        users,
+        token
     });
 });
 
@@ -65,7 +67,7 @@ const logout = catchAsyncErrors(async (req, res, next) => {
 //Get user Details
 
 const getUserDetails = catchAsyncErrors(async (req, res, next) => {
-    const details = await User.findById(req.params._id);
+    const details = await User.findById(req.params.id);
     res.status(200).json({
         success: true,
         details,

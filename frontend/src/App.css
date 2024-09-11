@@ -5,7 +5,8 @@
   
 }
 .app{
-  background-color: #eaf8fc;
+  /* background-color: #eaf8fc; */
+  background-image: url('../public/Background.png');
   min-height: 100vh;
   display: flex;
   align-items: center;
