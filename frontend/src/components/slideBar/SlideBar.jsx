@@ -44,10 +44,11 @@ function SlideBar() {
     };
     fetchUsers();
   }, []);
-  console.log(conversations);
+  // console.log(conversations);
 
   const { search,setSearch, searchUser, setSearchInput, loading, searchDetails } =
     useSearchUsers();
+
   const handleSearchUsers = async (e) => {
     e.preventDefault();
     searchUser();
@@ -138,6 +139,7 @@ function SlideBar() {
                     data={details}
                     onClick={() => {
                       accessChat(details._id);
+                      navigate('/app/chat')
                     }}
                   />
                 ))
@@ -148,7 +150,7 @@ function SlideBar() {
           <div>
             {conversations.map((conversation, idx) => {
               return (
-                <Conversation3 key={idx} onClick={()=>{ console.log('working')}}  data={conversation}  />
+                <Conversation3 key={idx}   data={conversation}  />
               );
             })}
           </div>

@@ -5,15 +5,13 @@ const ErrorHandler = require('../utils/errorHandler');
 
 // Send a message
 const sendMessage = catchAsyncErrors(async (req, res, next) => {
-    const { message } = req.body;
-    const { receiverId } = req.params;
+    const { message,receiverId  } = req.body;
     const senderId = req.user._id;
 
     if (!message) {
         return next(new ErrorHandler('Message content is required', 400));
     }
 
-    // Find the conversation between the users
     let conversation = await Conversation.findOne({
         users: { $all: [senderId, receiverId] }
     });
@@ -46,18 +44,14 @@ const allMessages = catchAsyncErrors(async (req, res, next) => {
     const { receiverId } = req.params;
     const senderId = req.user._id;
 
-    // Find the conversation between the users
     let conversation = await Conversation.findOne({
         users: { $all: [senderId, receiverId] }
     }).populate('latestMessage');
 
     if (!conversation) {
-        return res.status(200).json([]); // If no conversation, return an empty array
+        return res.status(200).json([]); 
     }
-
-    // Populate the conversation's messages
     const messages = await Message.find({ conversationId: conversation._id });
-
     res.status(200).json(messages);
 });
 

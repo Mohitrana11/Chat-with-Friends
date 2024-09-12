@@ -31,9 +31,6 @@ export default function useSearchUsers(){
           console.log(err);
         }finally{
             setLoading(false);
-            // setTimeout(() => {
-              // setSearch(false);
-            // }, 3000);
         }
     }
     return {search,setSearch,searchUser,setSearchInput,loading,searchDetails}

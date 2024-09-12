@@ -13,10 +13,10 @@ const register = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler('Email Already Exist',400));
     }
     const profilePicBoy = avatar|| `https://avatar.iran.liara.run/public/boy/?username${username}`;
-    const token = user.getJWTToken();
-    res.cookie('token', token);
     const user = await User.create({ email, username, password,avatar:profilePicBoy
     });
+    const token = user.getJWTToken();
+    res.cookie('token', token);
     res.status(201).json({
         success: true,
         message: 'Sign in Successful',user,token

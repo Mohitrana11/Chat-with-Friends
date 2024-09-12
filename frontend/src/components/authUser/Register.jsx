@@ -1,16 +1,9 @@
-// import React from 'react'
+
 import './Login.css'
 import logo from '../../../public/chatIcon.png'
 import { Link } from 'react-router-dom'
-// import axios from 'axios';
-// import { toast } from 'react-toastify';
-// import { useState } from 'react';
 import useSignIn from '../../hooks/useSignIn';
 function Register() {
-  // const navigate = useNavigate();
-
-  // const [userInput,setUserInput] = useState({});
-  // const [loading,setLoading] = useState(false);
   const {userInfo,setUserInfo,loading, userSign} = useSignIn();
   const handleInput = (e)=>{
     setUserInfo({...userInfo ,[e.target.id]:e.target.value});

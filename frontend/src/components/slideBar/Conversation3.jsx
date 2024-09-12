@@ -1,80 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Slidebar.css';
-import { useEffect,useState } from 'react';
 import axios from 'axios';
-function Conversation3({ onClick, data }) {
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserInputValue, selectUserInputValue } from '../../context/userInputSlice'; // Corrected import
+import { useNavigate } from 'react-router-dom';
+
+function Conversation3({ data }) {
+
     const getTimeDifference = (updatedAt) => {
         const updatedAtDate = new Date(updatedAt);
         const currentTime = new Date();
         const timeDifferenceMs = currentTime - updatedAtDate;
-        const timeDifferenceSeconds = Math.floor(timeDifferenceMs / 1000);
-        const timeDifferenceMinutes = Math.floor(timeDifferenceSeconds / 60);
+        const timeDifferenceMinutes = Math.floor(timeDifferenceMs / 1000 / 60);
         const timeDifferenceHours = Math.floor(timeDifferenceMinutes / 60);
         const timeDifferenceDays = Math.floor(timeDifferenceHours / 24);
         const timeDifferenceMonths = Math.floor(timeDifferenceDays / 30);
-        let displayText;
-        if (timeDifferenceMinutes < 50) {
-        displayText = `${timeDifferenceMinutes} minutes`;
-        } else if (timeDifferenceHours < 24) {
-        displayText = `${timeDifferenceHours} hours`;
-        } else if (timeDifferenceDays < 30) {
-        displayText = `${timeDifferenceDays} days`;
-        } else {
-        displayText = `${timeDifferenceMonths} months`;
-        }
-        return displayText;
+        
+        if (timeDifferenceMinutes < 50) return `${timeDifferenceMinutes} minutes`;
+        if (timeDifferenceHours < 24) return `${timeDifferenceHours} hours`;
+        if (timeDifferenceDays < 30) return `${timeDifferenceDays} days`;
+        return `${timeDifferenceMonths} months`;
     };
 
     const userData = JSON.parse(localStorage.getItem("UserInfo"));
-    const user = userData.users;
+    const user = userData?.users;
     const otherUser = data.users[1];
     const [idDetails, setIdDetails] = useState([]);
+
     useEffect(() => {
-    const fetchUsers = async () => {
-        try {
-            const config = {
-            headers: {
-                Authorization: `Bearer ${userData.token}`,
-            },
-            };
-            const response = await axios.get(`/api/v1/details/${otherUser}`, config);
-            setIdDetails(response.data);
-        } catch (error) {
-            console.error(error);
-        }
+        const fetchUsers = async () => {
+            try {
+                const config = {
+                    headers: { Authorization: `Bearer ${userData.token}` },
+                };
+                const response = await axios.get(`/api/v1/details/${otherUser}`, config);
+                setIdDetails(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchUsers();
+    }, [userData.token, otherUser]);
+
+
+    const handleMessage = (msg) => {
+        const arr = msg.split(" ");
+        let str = arr.slice(0, 3).join(" ");
+        if (arr.length > 3) str += "...";
+        return str;
     };
-      fetchUsers();
-    }, [userData.token,otherUser]);
 
+    const dispatch = useDispatch();
+    // const userIdxValue = useSelector(selectUserInputValue);
+    const navigate = useNavigate();
+    const handleInputChange = () => {
+        dispatch(setUserInputValue(otherUser)); // Ensure this sets the correct value
+        navigate('/app/chat')
+    };
 
-    
-  const handleMessage = (msg) => {
-    const arr = msg.split(" ");
-    let str = "";
-    for (let i = 0; i < Math.min(3, arr.length); i++) {
-      str += arr[i] + " ";
-    }
-    str = str.trim(); // assign the trimmed value back to str
-    if (arr.length > 3) {
-      str += "...";
-    }
-    return str;
-  };
-
-
-
-  return (
-    <div className='conversation-container hover:bg-blue-100' onClick={onClick}>
-      <p className='con-icon'>
-        <img src={idDetails?.details?.avatar || ''} alt="" />
-      </p>
-      <p className='con-username'>
-        {data?.isGroupChat ? data?.chatName : idDetails?.details?.username}
-      </p>
-      <p className='con-lastMessage'>{""}</p>
-      <p className='con-timeStamp'>{getTimeDifference(data?.updatedAt)}</p>
-    </div>
-  );
+    return (
+        <div className='conversation-container hover:bg-blue-100' onClick={handleInputChange}>
+            <p className='con-icon'>
+                <img src={idDetails?.details?.avatar || ''} alt="User Avatar" />
+            </p>
+            <p className='con-username'>
+                {data?.isGroupChat ? data?.chatName : idDetails?.details?.username}
+            </p>
+            <p className='con-lastMessage'>{handleMessage(data?.lastMessage?.content || "")}</p>
+            <p className='con-timeStamp'>{getTimeDifference(data?.updatedAt)}</p>
+        </div>
+    );
 }
 
 export default Conversation3;
