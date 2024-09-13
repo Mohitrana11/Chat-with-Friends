@@ -24,7 +24,6 @@ function App() {
       <BrowserRouter>
       <Routes>
         <Route path='/' element={<Login/>} />
-
         <Route element={<VerifyUser/>}>
         <Route path='/app' element={ <MainContainer/>} >
             <Route path='welcome' element={<Welcome/>} />
@@ -39,7 +38,7 @@ function App() {
         {/* <Route path='*' element={<Register/>} /> */}
       </Routes>
       </BrowserRouter>
-      <Toaster />
+      <Toaster/>
 
     </div>
   )

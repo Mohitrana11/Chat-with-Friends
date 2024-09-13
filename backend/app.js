@@ -1,14 +1,18 @@
 require('dotenv').config({path:'./config/.env'});
 const express = require('express');
+
 const app = express();
-const cors = require('cors');
+
+
+
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
-app.use(cors());
+
+
 
 
 app.get('/',(req,res)=>{
@@ -36,6 +40,11 @@ app.use('/api/chats',chatRoutes);
 const searchRouter  = require('./routes/searchUser');
 app.use('/api/search',searchRouter);
 
+
+
+// io.on('connection', (socket) => {
+//     console.log('a user connected');
+// });
 
 
 // Error handling middleware should be the last middleware

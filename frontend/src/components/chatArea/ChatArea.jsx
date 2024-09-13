@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef  } from 'react';
 import './Chat.css';
 import { IoSendSharp } from "react-icons/io5";
 import MessageByMe from './MessageByMe';
@@ -6,7 +6,7 @@ import MessageOther from './MessageOther';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { selectUserInputValue } from '../../context/userInputSlice';
-
+import { io } from 'socket.io-client';
 function ChatArea() {
   const theme = useSelector((state) => state.themeKey.value);
   const userIdxValue = useSelector(selectUserInputValue);
@@ -15,6 +15,28 @@ function ChatArea() {
   const [message, setMessage] = useState("");
   const [latestMessage, setLatestMessage] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState([]);
+
+const URL =  'http://localhost:4500';
+var socket ,selectedChatCompare ;
+// const [socketConnected, setSocketConnected] = useState(false);
+
+useEffect(() => {
+    socket = io(URL);
+    // socket.on('setup',(userData)=>{
+    // })
+    socket.on('setup',userData.users);
+    socket.on('connected',()=>setSocketConnected(true))
+    //   setUserMessages((prevMessages) => [...prevMessages, message]);
+    // });
+    // return () => {
+    //   socket.off('message');
+    // };
+}, []);
+
+
+
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -24,6 +46,7 @@ function ChatArea() {
         };
         const response = await axios.get(`/api/v1/details/${userIdxValue}`, config);
         setData(response.data);
+        socket.emit('join chat',userIdxValue)
       } catch (error) {
         console.error(error);
       }
@@ -32,20 +55,18 @@ function ChatArea() {
   }, [userIdxValue]);
 
 
+
   useEffect(() => {
     const fetchMessage = async () => {
       if (!userData || !userData.token) {
         console.error("Invalid user data or token");
         return;
       }
-  
       if (!userIdxValue) {
         console.error("Invalid user index value");
         return;
       }
-  
       setLoading(true);
-  
       try {
         const config = {
           headers: { Authorization: `Bearer ${userData.token}` },
@@ -54,8 +75,8 @@ function ChatArea() {
         console.log(receiverId);
         const response = await axios.get(`/api/message/${receiverId}`,config
         );
-  
-        setLatestMessage(response.data);
+        setLatestMessage(response.data);  
+        
       } catch (error) {
         console.error(error);
       } finally {
@@ -64,8 +85,22 @@ function ChatArea() {
     };
   
     fetchMessage();
+    // selectedChatCompare = 
   }, [userIdxValue, userData?.token]);
-  console.log(latestMessage)
+
+  // useEffect(()=>{
+  //   socket.on('message received',(newMessage)=>{
+  //     // if(!selectedChatCompare||selectedChatCompare._id !==newMessage._id){
+  //     //   // give notification:
+
+  //     // }else{
+  //       setMessage([...message,newMessage])
+  //     // }
+  //   })
+
+  // })
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,21 +113,24 @@ function ChatArea() {
       const config = {
         headers: { Authorization: `Bearer ${userData.token}` },
       };
-      const  response = await axios.post('/api/message', {
+      const response = await axios.post('/api/message', {
         receiverId: userIdxValue,
         message: message
       }, config);
+
+      // if (message.trim()) {
+      //   // Emit a message event to the server
+      //   socket.emit('message', message);
+      //   setMessage('');
+      // }
       setMessage('');
-      // setLatestMessage(response.data);
-      // setLatestMessage([...message,response.data])
+      socket.emit('new Message',response.data);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
-
-
 
 
   return (
@@ -110,9 +148,9 @@ function ChatArea() {
       <div className={`message-box ${theme ? '' : 'dark'}`}>
         {loading ? 'Loading...' : 
         latestMessage.map((msg) => (
-          msg.senderId != userData._id
+          msg.senderId === userData.users._id
             ? <MessageByMe key={msg._id} message={msg?.message} />
-            : <MessageOther key={msg._id} message={msg?.message} userImage={data?.details?.avatar} />
+            : <MessageOther key={msg._id} message={msg.message} userImage={data?.details?.avatar} />
         ))}
       </div>
       <div className={`input-box ${theme ? '' : 'dark'} `}>
