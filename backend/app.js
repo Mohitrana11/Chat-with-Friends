@@ -42,12 +42,8 @@ app.use('/api/search',searchRouter);
 
 
 
-// io.on('connection', (socket) => {
-//     console.log('a user connected');
-// });
 
 
-// Error handling middleware should be the last middleware
 const errorMiddleware = require('./middleware/error');
 app.use(errorMiddleware);
 
